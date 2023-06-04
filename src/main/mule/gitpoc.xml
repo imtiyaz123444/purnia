@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ca4567ff-5e3d-43f6-b129-6681f6a31703" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="gitpocFlow" doc:id="656a99b1-edf8-4313-a886-d52433df7002" >
+		<http:listener doc:name="Listener" doc:id="06aa3d13-f557-4e13-9e6c-6105b3c5cfdb" config-ref="HTTP_Listener_config" path="/poc"/>
+		<ee:transform doc:name="Transform Message" doc:id="0d3155d0-fdb2-4c64-b3b9-57976b38d12d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload reduce(item,accumulator)->item +accumulator]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="1e1e6063-cf8e-4b0f-9da8-8c0e1c55a77b" message="#[payload]"/>
+	</flow>
+</mule>
